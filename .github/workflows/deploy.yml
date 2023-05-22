@@ -1,9 +1,6 @@
 name: Check for Broken Links
 
-on:
-  push:
-    branches:
-      - '**' # this will run the workflow on push to any branch
+on: [push, pull_request]
 
 jobs:
   build_and_check:
