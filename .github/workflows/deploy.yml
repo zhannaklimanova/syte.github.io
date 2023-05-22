@@ -1,4 +1,4 @@
-name: PR Check for Broken Links
+name: Check for Broken Links on pushed branch
 
 on:
   push:
@@ -9,25 +9,22 @@ jobs:
   build_and_check:
     runs-on: ubuntu-latest
 
+    services:
+      my_server:
+        image: halverneus/static-file-server:v1.7.0
+        options: -v ${{ github.workspace }}:/web -p 8000:8080
+        env:
+          FOLDER: "/web"
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-
-      - name: Setup Simple HTTP Server
-        run: |
-          nohup python -m http.server 8000 &
-
-      - name: Sleep for setup
-        run: sleep 10  # Wait for server to setup
-
-      - name: Check if server is up
-        run: curl http://localhost:8000
 
       - name: Install dependencies
         run: npm install -g broken-link-checker  # Install the broken-link-checker package globally
 
       - name: Execute Link Checker and Show Broken Links
         env:
-          WEBSITE_URL: "http://localhost:8000"
+          WEBSITE_URL: "http://my_server:8000"
         run: |
           blc $WEBSITE_URL -ro
