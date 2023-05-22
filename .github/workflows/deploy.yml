@@ -15,10 +15,10 @@ jobs:
 
       - name: Setup Simple HTTP Server
         run: |
-          nohup python -m http.server 8000 &
+          nohup python -m http.server 8000 -v &
 
       - name: Sleep for setup
-        run: sleep 5  # Wait for server to setup
+        run: sleep 60  # Wait for server to setup
 
       - name: Install dependencies
         run: npm install -g broken-link-checker  # Install the broken-link-checker package globally
