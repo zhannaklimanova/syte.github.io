@@ -15,7 +15,7 @@ jobs:
 
       - name: Setup Simple HTTP Server
         run: |
-          nohup python -m http.server 8000 --bind 127.0.0.1 &  # bind to IPv4 address
+          nohup python -m http.server 8000 &
 
       - name: Sleep for setup
         run: sleep 10  # Wait for server to setup
@@ -23,5 +23,11 @@ jobs:
       - name: Check if server is up
         run: curl http://localhost:8000
 
-      - name: Check for broken links with wget
-        run: wget --spider -r -nd -nv http://localhost:8000 2>&1 | grep -B 2 'broken link!'
+      - name: Install dependencies
+        run: npm install -g broken-link-checker  # Install the broken-link-checker package globally
+
+      - name: Execute Link Checker and Show Broken Links
+        env:
+          WEBSITE_URL: "http://localhost:8000"
+        run: |
+          blc $WEBSITE_URL -ro
